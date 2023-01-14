@@ -37,47 +37,64 @@ public class BlogService {
         //updating the blog details
 
         //Updating the userInformation and changing its blogs
-
-        User user = userRepository1.findById(userId).get();
-        List<Blog> currBlogList = user.getBlogList();
-        Blog newBlog = new Blog(title,content,new Date(), user);
-        currBlogList.add(newBlog);
-        user.setBlogList(currBlogList);
-        blogRepository1.save(newBlog);
-        userRepository1.save(user);
-        //should save the blog as well bcz user is the parent;
+        try{
+            User user = userRepository1.findById(userId).get();
+            List<Blog> currBlogList = user.getBlogList();
+            Blog newBlog = new Blog(title,content,new Date(), user);
+            currBlogList.add(newBlog);
+            user.setBlogList(currBlogList);
+            blogRepository1.save(newBlog);
+            userRepository1.save(user);
+        }catch(Exception e){
+            System.out.println(e);
+        }
 
     }
 
     public Blog findBlogById(int blogId){
         //find a blog
-        return blogRepository1.findById(blogId).get();
+        Blog blog = null;
+        try{
+           blog = blogRepository1.findById(blogId).get();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return blog;
     }
 
     public void addImage(Integer blogId, String description, String dimensions) throws Exception {
         //add an image to the blog after creating it
-        Blog blog = blogRepository1.findById(blogId).get();
-        if(blog== null){
-            throw new Exception("Blog doesn't exist");
+        try{
+            Blog blog = blogRepository1.findById(blogId).get();
+            if(blog== null){
+                throw new Exception("Blog doesn't exist");
+            }
+            Image image = imageService1.createAndReturn(blog,description,dimensions);
+            image.setBlog(blog);
+            List<Image> imageList = blog.getImageList();
+            if(imageList==null){
+                imageList = new ArrayList<>();
+            }
+            imageList.add(image);
+            blog.setImageList(imageList);
+            imageRepository.save(image);
+            blogRepository1.save(blog);
+        }catch (Exception e){
+            System.out.println(e);
         }
-        Image image = imageService1.createAndReturn(blog,description,dimensions);
-        image.setBlog(blog);
-        List<Image> imageList = blog.getImageList();
-        if(imageList==null){
-            imageList = new ArrayList<>();
-        }
-        imageList.add(image);
-        blog.setImageList(imageList);
-        imageRepository.save(image);
-        blogRepository1.save(blog);
+
     }
 
     public void deleteBlog(int blogId){
         //delete blog and corresponding images
-        if(blogRepository1.findById(blogId).get()==null){
-            return;
+        try{
+            if(blogRepository1.findById(blogId).get()==null){
+                return;
+            }
+            blogRepository1.deleteById(blogId);
+            //since blog is parent should delete all images corresponding
+        }catch (Exception e){
+            System.out.println(e);
         }
-        blogRepository1.deleteById(blogId);
-        //since blog is parent should delete all images corresponding
     }
 }
