@@ -58,6 +58,10 @@ public class User{
         this.lastName = lastName;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public List<Blog> getBlogList() {
         return blogList;
     }
