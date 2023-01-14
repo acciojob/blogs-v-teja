@@ -22,17 +22,21 @@ public class UserService {
     }
 
     public void updateUser(User user){
-        int userId = user.getId();
-        User updatedUser = userRepository3.findById(userId).get();
-        if(updatedUser==null){
-            userRepository3.save(user);
-        }else{
-            updatedUser.setUsername(user.getUsername());
-            updatedUser.setPassword((user.getPassword()));
-            updatedUser.setFirstName(user.getFirstName());
-            updatedUser.setLastName(user.getLastName());
-            updatedUser.setBlogList(user.getBlogList());
-            userRepository3.save(updatedUser);
+        User updatedUser = null;
+        try{
+            updatedUser = userRepository3.findById(user.getId()).get();
+            if(updatedUser==null){
+                userRepository3.save(user);
+            }else{
+                updatedUser.setUsername(user.getUsername());
+                updatedUser.setPassword((user.getPassword()));
+                updatedUser.setFirstName(user.getFirstName());
+                updatedUser.setLastName(user.getLastName());
+                updatedUser.setBlogList(user.getBlogList());
+                userRepository3.save(updatedUser);
+            }
+        }catch(Exception e){
+            System.out.println(e);
         }
 
     }
