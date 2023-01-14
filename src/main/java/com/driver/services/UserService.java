@@ -27,6 +27,7 @@ public class UserService {
         if(updatedUser==null){
             updatedUser = userRepository3.findByUsername(user.getUsername());
         }
+        updatedUser.setId(user.getId());
         updatedUser.setUsername(user.getUsername());
         updatedUser.setPassword((user.getPassword()));
         updatedUser.setFirstName(user.getFirstName());

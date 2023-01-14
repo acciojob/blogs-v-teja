@@ -38,9 +38,10 @@ public class BlogService {
 
         //Updating the userInformation and changing its blogs
         try{
+            Blog newBlog = new Blog(title,content,new Date());
             User user = userRepository1.findById(userId).get();
+            newBlog.setUser(user);
             List<Blog> currBlogList = user.getBlogList();
-            Blog newBlog = new Blog(title,content,new Date(), user);
             currBlogList.add(newBlog);
             user.setBlogList(currBlogList);
             blogRepository1.save(newBlog);
@@ -62,12 +63,12 @@ public class BlogService {
         return blog;
     }
 
-    public void addImage(Integer blogId, String description, String dimensions) throws Exception {
+    public void addImage(Integer blogId, String description, String dimensions) {
         //add an image to the blog after creating it
         try{
             Blog blog = blogRepository1.findById(blogId).get();
             if(blog== null){
-                throw new Exception("Blog doesn't exist");
+                return;
             }
             Image image = imageService1.createAndReturn(blog,description,dimensions);
             image.setBlog(blog);
@@ -77,7 +78,6 @@ public class BlogService {
             }
             imageList.add(image);
             blog.setImageList(imageList);
-            imageRepository.save(image);
             blogRepository1.save(blog);
         }catch (Exception e){
             System.out.println(e);

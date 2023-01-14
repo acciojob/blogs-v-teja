@@ -35,13 +35,7 @@ public class ImageService {
 
     public void deleteImage(Image image){
         try{
-            int imageId = image.getId();
-            Blog blog = image.getBlog();
-            List<Image> imageList = blog.getImageList();
-            imageList.remove(image);
-            blog.setImageList(imageList);
-            blogRepository.save(blog);
-            imageRepository2.deleteById(imageId);
+            imageRepository2.delete(image);
         }catch (Exception e){
             System.out.println("deleteImage Failed");
         }
@@ -54,25 +48,30 @@ public class ImageService {
     public int countImagesInScreen(Image image, String screenDimensions) {
         //Find the number of images of given dimensions that can fit in a screen having `screenDimensions`
         //In case the image is null, return 0
-        if(image==null){
-            return 0;
+        int count =0;
+        try{
+            if(image==null){
+                return 0;
+            }
+
+            String imageDimension = image.getDimensions();
+            String[] imageParts = imageDimension.split("X");
+            String part1 = imageParts[0];
+            String part2 = imageParts[1];
+
+
+            String[] screenParts = screenDimensions.split("X");
+            String partS1 = screenParts[0];
+            String partS2 = screenParts[1];
+
+            int length = Integer.parseInt(part1)/Integer.parseInt(partS1);
+            int breadth = Integer.parseInt(part2)/Integer.parseInt(partS2);
+
+            count = length*breadth;
+
+        }catch (Exception e){
+            System.out.println(e);
         }
-
-        String imageDimension = image.getDimensions();
-        String[] imageParts = imageDimension.split("X");
-        String part1 = imageParts[0];
-        String part2 = imageParts[1];
-
-
-        String[] screenParts = screenDimensions.split("X");
-        String partS1 = screenParts[0];
-        String partS2 = screenParts[1];
-
-        int length = Integer.parseInt(part1)/Integer.parseInt(partS1);
-        int breadth = Integer.parseInt(part2)/Integer.parseInt(partS2);
-
-        int count = length*breadth;
         return count;
-
     }
 }
