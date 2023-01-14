@@ -64,8 +64,8 @@ public class ImageService {
             String partS1 = screenParts[0];
             String partS2 = screenParts[1];
 
-            int length = Integer.parseInt(part1)/Integer.parseInt(partS1);
-            int breadth = Integer.parseInt(part2)/Integer.parseInt(partS2);
+            int length = Integer.parseInt(partS1)/Integer.parseInt(part1);
+            int breadth = Integer.parseInt(partS2)/Integer.parseInt(part2);
 
             count = length*breadth;
 
